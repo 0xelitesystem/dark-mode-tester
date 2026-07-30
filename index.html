@@ -4,6 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dark Mode Tester</title>
+<meta property="og:title" content="Dark Mode Tester">
+<meta property="og:description" content="dark-mode-tester">
+<meta property="og:url" content="https://0xelitesystem.github.io/dark-mode-tester/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
 <meta name="description" content="Preview your CSS in light, dark, and auto modes side by side. Paste color tokens, see contrast scores and a generated full-page mockup.">
 <meta name="ai.description" content="Single-file HTML tool for testing dark-mode color systems. User pastes light-mode and dark-mode color tokens (background, foreground, muted, accent, border) and the tool renders a full mockup showing buttons, cards, text, links, and code blocks in both modes side by side. Computes WCAG contrast ratios for every pair and flags failures.">
 <style>
@@ -267,6 +272,45 @@ $("theme-btn").addEventListener("click",()=>applyTheme(document.body.dataset.the
 if(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches)applyTheme("dark");
 
 update();
+</script>
+<script>
+/* Remember the light or dark choice across visits. */
+(function () {
+  var KEY = "theme";
+  var btn = document.querySelector("#theme-toggle, #theme-btn, .theme-btn, .theme-toggle, [data-theme-toggle]");
+  function host() {
+    if (document.documentElement.hasAttribute("data-theme")) { return document.documentElement; }
+    if (document.body && document.body.hasAttribute("data-theme")) { return document.body; }
+    return document.documentElement;
+  }
+  function current() { return host().getAttribute("data-theme") || ""; }
+  function setter() {
+    if (typeof setTheme === "function") { return setTheme; }
+    if (typeof applyTheme === "function") { return applyTheme; }
+    return null;
+  }
+  function force(t) {
+    var fn = setter();
+    if (fn) { fn(t); return; }
+    host().setAttribute("data-theme", t);
+    var other = t === "dark" ? "Light" : "Dark";
+    var lbl = document.querySelector("#theme-label");
+    if (lbl && (lbl.textContent === "Dark" || lbl.textContent === "Light")) { lbl.textContent = other; }
+    else if (btn && (btn.textContent === "Dark" || btn.textContent === "Light")) { btn.textContent = other; }
+    if (btn && btn.hasAttribute("aria-pressed")) { btn.setAttribute("aria-pressed", String(t === "dark")); }
+  }
+  var saved = null;
+  try { saved = localStorage.getItem(KEY); } catch (e) {}
+  if ((saved === "dark" || saved === "light") && saved !== current()) { force(saved); }
+  if (btn) {
+    btn.addEventListener("click", function () {
+      setTimeout(function () {
+        var t = current();
+        try { if (t) { localStorage.setItem(KEY, t); } } catch (e) {}
+      }, 0);
+    });
+  }
+})();
 </script>
 </body>
 </html>

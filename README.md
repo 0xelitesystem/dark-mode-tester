@@ -49,6 +49,10 @@ The mockup includes: heading, paragraph, muted text, link, card, primary button,
 - Doesn't simulate color blindness (use the browser DevTools "Rendering" panel)
 - Doesn't generate Tailwind config, CSS variables, or any specific framework's tokens
 
+## More
+
+Part of a catalog of single-file browser tools and plain-language references, all MIT licensed and dependency-free: [0xelitesystem.github.io](https://0xelitesystem.github.io/). Built by [elitesystem.ai](https://elitesystem.ai).
+
 ## License
 
 MIT. See [LICENSE](LICENSE).
